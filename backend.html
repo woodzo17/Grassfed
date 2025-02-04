@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <!-- Prevent caching -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <style>
+      /* Base styles with light green accent */
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #121212;
+        color: #e0e0e0;
+        font-family: 'Roboto', sans-serif;
+      }
+      .container {
+        max-width: 700px;
+        margin: 40px auto;
+        padding: 20px 30px;
+        background-color: #1f1f1f;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+      }
+      header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      header h1 {
+        font-size: 2.5em;
+        color: #8bc34a;
+        margin: 0;
+      }
+      header p {
+        font-size: 1.2em;
+        color: #cfd8dc;
+      }
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #ffffff;
+      }
+      form {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .input-group {
+        margin-bottom: 10px;
+      }
+      label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+      }
+      input, select, button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #2c2c2c;
+        color: #fff;
+        font-size: 1em;
+      }
+      input::placeholder {
+        color: #888;
+      }
+      button {
+        background-color: #8bc34a;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      button:hover {
+        background-color: #7cb342;
+      }
+      fieldset {
+        border: 1px solid #444;
+        border-radius: 4px;
+        padding: 15px;
+        margin-bottom: 20px;
+      }
+      legend {
+        font-size: 1.2em;
+        font-weight: bold;
+        padding: 0 5px;
+        color: #8bc34a;
+      }
+      .description {
+        font-size: 0.85em;
+        color: #a0a0a0;
+        margin-top: 2px;
+        margin-bottom: 8px;
+      }
+      #result {
+        text-align: center;
+        font-size: 1.3em;
+        font-weight: bold;
+        margin-top: 20px;
+        color: #8bc34a;
+      }
+      /* Two-column grid for filter groups if space allows */
+      .filter-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+      @media (max-width: 600px) {
+        .filter-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Grassfed</h1>
+        <p>Property Count Lookup</p>
+      </header>
+      <form id="filterForm">
+        <!-- Zip Codes & State -->
+        <div class="input-group">
+          <label for="zipCodes">Zip Codes (comma separated):</label>
+          <input type="text" id="zipCodes" name="zipCodes" placeholder="e.g., 04101, 04102, 04103">
+          <div class="description">Enter one or more zip codes separated by commas.</div>
+        </div>
+        <div class="input-group">
+          <label for="state">State (2-letter code):</label>
+          <input type="text" id="state" name="state" placeholder="e.g., ME" value="ME">
+          <div class="description">Enter the two-letter state code (e.g., NY, CA, TX).</div>
+        </div>
+
+        <!-- Financial Distress Filters -->
+        <fieldset>
+          <legend>Financial Distress Filters</legend>
+          <div class="filter-grid">
+            <div class="input-group">
+              <label><input type="checkbox" id="high_equity" name="high_equity"> High Equity</label>
+              <div class="description">Properties with significant equity (typically >39%).</div>
+            </div>
+            <div class="input-group">
+              <label><input type="checkbox" id="tax_lien" name="tax_lien"> Tax Lien</label>
+              <div class="description">Properties with outstanding tax liens.</div>
+            </div>
+            <div class="input-group">
+              <label><input type="checkbox" id="foreclosure" name="foreclosure"> Foreclosure</label>
+              <div class="description">Properties in the foreclosure process.</div>
+            </div>
+            <div class="input-group">
+              <label><input type="checkbox" id="pre_foreclosure" name="pre_foreclosure"> Pre-Foreclosure</label>
+              <div class="description">Properties with pre-foreclosure notices.</div>
+            </div>
+            <div class="input-group">
+              <label for="ltv_max">Max LTV:</label>
+              <input type="number" id="ltv_max" name="ltv_max" placeholder="e.g., 50">
+              <div class="description">Maximum Loan-to-Value ratio.</div>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Life Changes Filters -->
+        <fieldset>
+          <legend>Life Changes Filters</legend>
+          <div class="filter-grid">
+            <div class="input-group">
+              <label><input type="checkbox" id="absentee_owner" name="absentee_owner"> Absentee Owner</label>
+              <div class="description">Owner does not reside on-site.</div>
+            </div>
+            <div class="input-group">
+              <label><input type="checkbox" id="inherited" name="inherited"> Inherited</label>
+              <div class="description">Properties that have been inherited.</div>
+            </div>
+            <div class="input-group">
+              <label><input type="checkbox" id="out_of_state_owner" name="out_of_state_owner"> Out-of-State Owner</label>
+              <div class="description">Owner resides in a different state.</div>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Property Condition Filters -->
+        <fieldset>
+          <legend>Property Condition Filters</legend>
+          <div class="filter-grid">
+            <div class="input-group">
+              <label><input type="checkbox" id="vacant" name="vacant"> Vacant</label>
+              <div class="description">Properties that are unoccupied.</div>
+            </div>
+            <div class="input-group">
+              <label for="value_min">Min Value:</label>
+              <input type="number" id="value_min" name="value_min" placeholder="e.g., 300000">
+              <div class="description">Minimum estimated property value.</div>
+            </div>
+            <div class="input-group">
+              <label for="value_max">Max Value:</label>
+              <input type="number" id="value_max" name="value_max" placeholder="e.g., 300000">
+              <div class="description">Maximum estimated property value.</div>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Market Activity Filters -->
+        <fieldset>
+          <legend>Market Activity Filters</legend>
+          <div class="filter-grid">
+            <div class="input-group">
+              <label for="mls_days_on_market_min">MLS Days on Market (min):</label>
+              <input type="number" id="mls_days_on_market_min" name="mls_days_on_market_min" placeholder="e.g., 90">
+              <div class="description">Minimum days on market.</div>
+            </div>
+            <div class="input-group">
+              <label for="mls_listing_price">MLS Listing Price:</label>
+              <input type="number" id="mls_listing_price" name="mls_listing_price" placeholder="e.g., 300000">
+              <div class="description">MLS listing price.</div>
+            </div>
+            <div class="input-group">
+              <label for="mls_listing_price_operator">MLS Listing Price Operator:</label>
+              <select id="mls_listing_price_operator" name="mls_listing_price_operator">
+                <option value="">Select operator</option>
+                <option value="lt">Less Than</option>
+                <option value="gt">Greater Than</option>
+              </select>
+              <div class="description">Filter for prices less or greater than the given value.</div>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Motivated Seller Filters -->
+        <fieldset>
+          <legend>Motivated Seller Filters</legend>
+          <div class="filter-grid">
+            <div class="input-group">
+              <label><input type="checkbox" id="death" name="death"> Deceased Owner / Probate</label>
+              <div class="description">Indicates owner is deceased or in probate.</div>
+            </div>
+            <div class="input-group">
+              <label><input type="checkbox" id="auction" name="auction"> Auction</label>
+              <div class="description">Property is scheduled for auction.</div>
+            </div>
+            <div class="input-group">
+              <label><input type="checkbox" id="reo" name="reo"> REO (Bank-Owned)</label>
+              <div class="description">Property is bank-owned or REO.</div>
+            </div>
+            <div class="input-group">
+              <label><input type="checkbox" id="judgment" name="judgment"> Judgment</label>
+              <div class="description">Legal judgments against the property/owner.</div>
+            </div>
+            <div class="input-group">
+              <label><input type="checkbox" id="quit_claim" name="quit_claim"> Quit Claim</label>
+              <div class="description">Property transferred via quit claim deed.</div>
+            </div>
+          </div>
+        </fieldset>
+
+        <button type="button" onclick="lookupCount()">Get Property Count</button>
+      </form>
+      <div id="result"></div>
+    </div>
+    
+    <!-- Global error handler -->
+    <script>
+      window.onerror = function(message, source, lineno, colno, error) {
+        document.getElementById('result').innerHTML = 'An error occurred: ' + message;
+        return true;
+      };
+
+      function lookupCount() {
+        var formData = {
+          zipCodes: document.getElementById("zipCodes").value,
+          state: document.getElementById("state").value,
+          high_equity: document.getElementById("high_equity").checked,
+          tax_lien: document.getElementById("tax_lien").checked,
+          foreclosure: document.getElementById("foreclosure").checked,
+          pre_foreclosure: document.getElementById("pre_foreclosure").checked,
+          ltv_max: document.getElementById("ltv_max").value,
+          absentee_owner: document.getElementById("absentee_owner").checked,
+          inherited: document.getElementById("inherited").checked,
+          out_of_state_owner: document.getElementById("out_of_state_owner").checked,
+          vacant: document.getElementById("vacant").checked,
+          value_min: document.getElementById("value_min").value,
+          value_max: document.getElementById("value_max").value,
+          mls_days_on_market_min: document.getElementById("mls_days_on_market_min").value,
+          mls_listing_price: document.getElementById("mls_listing_price").value,
+          mls_listing_price_operator: document.getElementById("mls_listing_price_operator").value,
+          death: document.getElementById("death").checked,
+          auction: document.getElementById("auction").checked,
+          reo: document.getElementById("reo").checked,
+          judgment: document.getElementById("judgment").checked,
+          quit_claim: document.getElementById("quit_claim").checked
+        };
+
+        document.getElementById("result").innerHTML = "Loading...";
+        google.script.run.withSuccessHandler(function(count) {
+          document.getElementById("result").innerHTML = "Total matching properties: " + count;
+        }).withFailureHandler(function(error) {
+          document.getElementById("result").innerHTML = "Error: " + error.message;
+        }).getPropertyCount(formData);
+      }
+    </script>
+  </body>
+</html>
