@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <script src="https://apis.google.com/js/api.js"></script> <!-- Added this line -->
+    <script src="https://apis.google.com/js/api.js"></script>
     <style>
       /* Base styles with light green accent */
       body {
@@ -268,8 +268,10 @@
       };
 
       function lookupCount() {
-        var formData = {
-          zipCodes: document.getElementById("zipCodes").value,
+        const apiKey = 'GRASSFEDBROKERSOLUTIONS-cbdf-7ade-ab41-773002d8c382'; // Replace with your actual API key
+        const url = "https://api.realestateapi.com/v2/PropertySearch";
+        const formData = {
+          zipCodes: document.getElementById("zipCodes").value.split(',').map(zip => zip.trim()),
           state: document.getElementById("state").value,
           high_equity: document.getElementById("high_equity").checked,
           tax_lien: document.getElementById("tax_lien").checked,
@@ -291,13 +293,24 @@
           judgment: document.getElementById("judgment").checked,
           quit_claim: document.getElementById("quit_claim").checked
         };
-
+        
         document.getElementById("result").innerHTML = "Loading...";
-        google.script.run.withSuccessHandler(function(count) {
-          document.getElementById("result").innerHTML = "Total matching properties: " + count;
-        }).withFailureHandler(function(error) {
+        
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": apiKey
+          },
+          body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("result").innerHTML = "Total matching properties: " + data.count;
+        })
+        .catch(error => {
           document.getElementById("result").innerHTML = "Error: " + error.message;
-        }).getPropertyCount(formData);
+        });
       }
     </script>
   </body>
